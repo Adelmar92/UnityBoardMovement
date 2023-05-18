@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class Cell : MonoBehaviour
 {
@@ -8,6 +9,7 @@ public class Cell : MonoBehaviour
     private CellType _cellType;
     public int Col;
     public int Row;
+    public bool canHighlight;
     public void Configurate(bool hasTrap, CellType cellType, int col, int row)
     {
         _hasTrap = hasTrap;
@@ -47,5 +49,23 @@ public class Cell : MonoBehaviour
         }
         cellRepresentation.transform.parent = this.gameObject.transform;
         cellRepresentation.transform.localPosition = new Vector3(0, 0, 0);
+    }
+
+    public CellType GetCellType() {
+        return _cellType;
+    }
+
+    public void ShowAvaliable() {
+        GameObject child = this.gameObject.transform.GetChild(0).gameObject;
+        GameObject child2 = child.transform.GetChild(0).gameObject;
+        child2.SetActive(true);
+        canHighlight = true;
+    }
+
+    public void HighLight(bool highLight) {
+        GameObject child = this.gameObject.transform.GetChild(0).gameObject;
+        GameObject child2 = child.transform.GetChild(1).gameObject;
+        Renderer rend = child2.GetComponent<Renderer>();
+        rend.enabled = highLight;
     }
 }

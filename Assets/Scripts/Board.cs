@@ -10,6 +10,8 @@ public class Board : MonoBehaviour
 
     [SerializeField]
     private int _trapAmount = 8;
+    [SerializeField]
+    private Cell _heroDeployCell;
 
     /*Prefabs*/
     [SerializeField]
@@ -44,10 +46,14 @@ public class Board : MonoBehaviour
 
                 cellController.Configurate(hasTrap, boardTemplate[row, col], col , row);
                 _cells[row, col] = cellController;
+
+                //Asigno la celda que se usa para desplegar el personaje
+                if (cellController.GetCellType() == CellType.PStart) {
+                    _heroDeployCell = cellController;
+                }
             }
         }
     }
-
     public List<List<int>> GetTrapCells(int rowDim, int colDim, CellType[,] boardTemplate)
     {
         List<List<int>> randomCells = new List<List<int>>();
@@ -71,4 +77,8 @@ public class Board : MonoBehaviour
     {
         return new Vector3(col, 0, row);
     }
+
+    public Cell GetHeroDeployCell() { 
+       return _heroDeployCell;
+    } 
 }
