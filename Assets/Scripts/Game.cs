@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UIElements;
 
 public class Game : MonoBehaviour
 {
@@ -24,7 +26,18 @@ public class Game : MonoBehaviour
     [SerializeField]
     private GameState _gameState;
 
-    private 
+    //La celda que esta siendo hovered en el momento
+    private GameObject _hoveredCell;
+
+    private GameObject _hero;
+
+
+    /*Utils*/
+    [SerializeField]
+    private LineDrawer _lineDrawer;
+
+    /*Actions*/
+    private List<Action> _currentActions;
 
     // Start is called before the first frame update
     void Start()
@@ -37,31 +50,37 @@ public class Game : MonoBehaviour
         buildBoard();
         buildHeroes();
         _gameState = GameState.SelectingHero;
+        _lineDrawer = this.GetComponent<LineDrawer>();
     }
 
     private void Update()
     {
         if (_gameState == GameState.SelectingHero) {
-            GameObject heroGo = checkUserClick();
-            if (heroGo != null)
-            {
-                Hero hero = heroGo.GetComponent<Hero>();
-                if (hero != null)
-                {
-                    List<Action> actions = getAvailableActions(hero);
-                    foreach (Action action in actions)
-                    {
-                        action.DestinyCell.ShowAvaliable();
-                    }
-                    _gameState = GameState.SelectingAction;
-                }
-            }
+            selectHero();
         }
         else if (_gameState == GameState.SelectingAction)
         {
             mouseHover();
+            OnClick();
         }
         
+    }
+
+    private void selectHero() {
+        GameObject heroGo = checkUserClick();
+        if (heroGo != null)
+        {
+            Hero hero = heroGo.GetComponent<Hero>();
+            if (hero != null)
+            {
+                _currentActions = getAvailableActions(hero);
+                foreach (Action action in _currentActions)
+                {
+                    action.DestinyCell.ShowAvaliable();
+                }
+                _gameState = GameState.SelectingAction;
+            }
+        }
     }
 
     private void buildBoard()
@@ -79,11 +98,11 @@ public class Game : MonoBehaviour
 
     private void buildHeroes() {
         //PlayerWarrior
-        GameObject playerWarrior = Instantiate(_playerWarriorPerfab, new Vector3(), Quaternion.identity);
-        playerWarrior.name = "Player Warrior";
-        playerWarrior.transform.parent = _playerWarriorSpawnCell.transform;
-        playerWarrior.transform.localPosition = new Vector3(0, 0, 0);
-        Hero heroController = playerWarrior.GetComponent<Hero>();
+        _hero = Instantiate(_playerWarriorPerfab, new Vector3(), Quaternion.identity);
+        _hero.name = "Player Warrior";
+        _hero.transform.parent = _playerWarriorSpawnCell.transform;
+        _hero.transform.localPosition = new Vector3(0, 0, 0);
+        Hero heroController = _hero.GetComponent<Hero>();
         heroController.Configure(false, 2);
     }
 
@@ -135,22 +154,58 @@ public class Game : MonoBehaviour
         {
             if (hit.transform.tag == "Cellhighlight")
             {
-                print("Hit asfsgag");
                 GameObject hitTransform = hit.transform.gameObject;
-                Renderer rend = hitTransform.GetComponent<Renderer>();
-                rend.enabled = true;
-                Cell hoverCell = hitTransform.transform.parent.parent.GetComponent<Cell>();
-                if (highlightedCell != null && hoverCell != highlightedCell) {
-                    highlightedCell.HighLight(false);
+                if (_hoveredCell == null || _hoveredCell != hitTransform) {
+                    _hoveredCell = hitTransform;
+                    Cell hitCell = hitTransform.transform.parent.transform.parent.GetComponent<Cell>();
+                    Debug.Log(hitCell);
+                    if (IsCellOnActions(hitCell)) {
+                        _lineDrawer.DrawCurveBetweenObjects(hitTransform, _hero);
+                    }
                 }
-                highlightedCell = hoverCell;
-                highlightedCell.HighLight(true);
             }
             else {
-                if (highlightedCell != null) {
-                    highlightedCell.HighLight(false);
+                _hoveredCell = null;
+                _lineDrawer.RemoveLine();
+            }
+        }
+    }
+
+    public void OnClick() {
+        if (Input.GetMouseButtonDown(0))
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+
+            /*La celda clickeable?*/
+            if (Physics.Raycast(ray, out hit))
+            {
+                if (hit.transform.tag == "Cellhighlight")
+                {
+                    Debug.Log("Se hizo click");
+                    Transform hitTransform = hit.transform;
+                    /*Obtengo el objeto celda*/
+                    Cell hitCell = hitTransform.transform.parent.transform.parent.GetComponent<Cell>();
+                    Debug.Log("Se hizo click" + hitCell);
+                    //la hit cell es parte de las posibles acciones?
+                    if (IsCellOnActions(hitCell)) {
+                        hitCell.ShowSelected();
+                        _gameState = GameState.ActonSelected;
+                    }
                 }
             }
         }
     }
+
+    private bool IsCellOnActions(Cell cell) {
+        for (int i = 0; i < _currentActions.Count; i++)
+        {
+            if (_currentActions[i].DestinyCell == cell)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

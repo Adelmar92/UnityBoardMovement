@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77334ffd611911d4185af8136cfccfca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _normalCellPrefab: {fileID: 2582055022179847440, guid: 977143a545624bd4b92f66578ba75039, type: 3}
+  _normalCellPrefab: {fileID: 4490444256008594356, guid: 388e9d1d5aff00f48b1b7393b48df333, type: 3}
   _playerStartCellPrefab: {fileID: 2582055022179847440, guid: e574ae428a3f1d1478f2f731fa2321ba, type: 3}
   _chestCellPrefab: {fileID: 2582055022179847440, guid: aa025e0216f2b7a4899aa42475d93264, type: 3}
 --- !u!114 &4736661420964440042
@@ -62,3 +62,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Col: 0
   Row: 0
+  canHighlight: 0

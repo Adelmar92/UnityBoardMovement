@@ -41,10 +41,10 @@ public class Cell : MonoBehaviour
                 cellRepresentation = Instantiate(prefabProvider.GetChestCellPrefab(), new Vector3(0, 0, 0), Quaternion.Euler(90, 90, 0));
                 break;
             case (CellType.PStart):
-                cellRepresentation = Instantiate(prefabProvider.GetPlayerStartCellPrefab(), new Vector3(0, 0, 0), Quaternion.Euler(90, 90, 0));
+                cellRepresentation = Instantiate(prefabProvider.GetPlayerStartCellPrefab(), new Vector3(0, 0, 0), Quaternion.Euler(0, 0, 0));
                 break;
             default:
-                cellRepresentation = Instantiate(prefabProvider.GetNormalCellPrefab(), new Vector3(0, 0, 0), Quaternion.Euler(90, 90, 0));
+                cellRepresentation = Instantiate(prefabProvider.GetNormalCellPrefab(), new Vector3(0, 0, 0), Quaternion.Euler(0, 0, 0));
                 break;
         }
         cellRepresentation.transform.parent = this.gameObject.transform;
@@ -56,10 +56,22 @@ public class Cell : MonoBehaviour
     }
 
     public void ShowAvaliable() {
+        /*esto hay que cambiarlo, estoy mostrando el available buscando el hijo del cell es malisimo*/
         GameObject child = this.gameObject.transform.GetChild(0).gameObject;
         GameObject child2 = child.transform.GetChild(0).gameObject;
         child2.SetActive(true);
         canHighlight = true;
+    }
+
+    public void ShowSelected()
+    {
+        /*Hago el selected visible*/
+        GameObject child = this.gameObject.transform.GetChild(0).gameObject;
+        GameObject child2 = child.transform.GetChild(1).gameObject;
+        child2.SetActive(true);
+        /*Hago el available invisible*/
+        GameObject child4 = child.transform.GetChild(0).gameObject;
+        child4.SetActive(false);
     }
 
     public void HighLight(bool highLight) {

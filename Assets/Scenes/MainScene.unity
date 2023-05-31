@@ -372,14 +372,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_LocalRotation: {x: 0.60876137, y: 0, z: 0, w: 0.7933534}
-  m_LocalPosition: {x: 3, y: 11.5, z: -0.6}
+  m_LocalRotation: {x: 0.55887467, y: -0, z: -0, w: 0.8292521}
+  m_LocalPosition: {x: 3, y: 11.29, z: -1.13}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 75, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 67.956, y: 0, z: 0}
 --- !u!1 &1008303607
 GameObject:
   m_ObjectHideFlags: 0
@@ -410,7 +410,7 @@ Transform:
   m_Children:
   - {fileID: 306939021}
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1767793481
 PrefabInstance:
@@ -492,6 +492,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1998882432}
   - component: {fileID: 1998882433}
+  - component: {fileID: 1998882434}
   m_Layer: 0
   m_Name: GameHandler
   m_TagString: Untagged
@@ -531,7 +532,20 @@ MonoBehaviour:
   _playerWarriorSpawnCell: {fileID: 306939020}
   _playerDeployCell: {fileID: 0}
   _gameState: 0
+  _lineDrawer: {fileID: 0}
   highlightedCell: {fileID: 0}
+--- !u!114 &1998882434
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1998882431}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b0b0427a375355f4ba2ff64a6567120c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &7235138698720916276
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -549,7 +563,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7235138698725371687, guid: a752f3d262486234face58ce16c7ce48, type: 3}
       propertyPath: m_RootOrder
-      value: 5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 7235138698725371687, guid: a752f3d262486234face58ce16c7ce48, type: 3}
       propertyPath: m_LocalPosition.x
