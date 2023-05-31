@@ -2,5 +2,6 @@ public enum GameState
 {
     SelectingHero,
     SelectingAction,
-    ActonSelected
+    ActonSelected,
+    MovingHero
 }

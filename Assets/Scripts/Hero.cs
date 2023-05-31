@@ -12,4 +12,11 @@ public class Hero : MonoBehaviour
         Deployed = deployed;
         Movement = movement;
     }
+
+    public void SetSelected (bool selected)
+    {
+        GameObject hitTransform = this.gameObject.transform.GetChild(1).gameObject;
+        GameObject hitTransform2 = hitTransform.transform.GetChild(0).gameObject;
+        hitTransform2.SetActive(selected) ;
+    }
 }

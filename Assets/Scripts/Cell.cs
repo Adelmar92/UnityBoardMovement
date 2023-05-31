@@ -6,6 +6,7 @@ using UnityEngine.UIElements;
 public class Cell : MonoBehaviour
 {
     private bool _hasTrap;
+    private bool _isRevealed;
     private CellType _cellType;
     public int Col;
     public int Row;
@@ -16,8 +17,22 @@ public class Cell : MonoBehaviour
         _cellType = cellType;
         this.Col = col;
         this.Row = row;
+        if (cellType == CellType.Normal) {
+            _isRevealed = false;
+        }
 
         instantiateCellRepresentation(cellType);
+    }
+
+    public void Reveal() {
+        GameObject child = this.gameObject.transform.GetChild(0).gameObject;
+        GameObject child2 = child.transform.GetChild(2).gameObject;
+        child2.SetActive(false);
+        _isRevealed=true;
+    }
+
+    public bool IsRevealed() { 
+        return _isRevealed;
     }
 
     private void instantiateCellRepresentation(CellType cellType)
@@ -60,6 +75,8 @@ public class Cell : MonoBehaviour
         GameObject child = this.gameObject.transform.GetChild(0).gameObject;
         GameObject child2 = child.transform.GetChild(0).gameObject;
         child2.SetActive(true);
+        GameObject child3 = child.transform.GetChild(1).gameObject;
+        child3.SetActive(false);
         canHighlight = true;
     }
 
@@ -74,10 +91,13 @@ public class Cell : MonoBehaviour
         child4.SetActive(false);
     }
 
-    public void HighLight(bool highLight) {
+    public void HideAllSelectors() {
+        /*Hago el selected visible*/
         GameObject child = this.gameObject.transform.GetChild(0).gameObject;
         GameObject child2 = child.transform.GetChild(1).gameObject;
-        Renderer rend = child2.GetComponent<Renderer>();
-        rend.enabled = highLight;
+        child2.SetActive(false);
+        /*Hago el available invisible*/
+        GameObject child4 = child.transform.GetChild(0).gameObject;
+        child4.SetActive(false);
     }
 }

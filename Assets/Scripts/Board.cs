@@ -7,6 +7,8 @@ public class Board : MonoBehaviour
 {
 
     private Cell[,] _cells;
+    public Cell[,] GetCells() { return this._cells; }
+
 
     [SerializeField]
     private int _trapAmount = 8;
@@ -80,5 +82,7 @@ public class Board : MonoBehaviour
 
     public Cell GetHeroDeployCell() { 
        return _heroDeployCell;
-    } 
+    }
+    
+
 }

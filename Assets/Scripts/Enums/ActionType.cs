@@ -1,4 +1,5 @@
 public enum ActionType
 {
-    Deploy
+    Deploy,
+    Move,
 }

@@ -1,0 +1,9 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <ui:VisualElement>
+        <ui:VisualElement name="Container" style="height: 113px; color: rgba(210, 210, 210, 0); flex-direction: column; align-items: flex-start; justify-content: center; position: absolute; top: 464px; left: -2px; margin-left: 20px; margin-right: 0; width: 764px;">
+            <ui:Label text="Acciones" display-tooltip-when-elided="true" style="color: rgb(255, 255, 255);" />
+            <ui:Button text="Deploy Hero" display-tooltip-when-elided="true" name="DeployHero" style="position: relative; -unity-font: url(&apos;project://database/Assets/UI%20Toolkit/UnityThemes/UnityDefaultRuntimeTheme.tss?fileID=2230732570650464555&amp;guid=5eef80bfeddda464fa9614bea4bf271c&amp;type=3#NotInter-Regular&apos;); color: rgb(255, 255, 255); background-color: rgb(58, 58, 58);" />
+            <ui:Button text="MoveHero" display-tooltip-when-elided="true" name="MoveHero" style="position: relative; -unity-font: url(&apos;project://database/Assets/UI%20Toolkit/UnityThemes/UnityDefaultRuntimeTheme.tss?fileID=2230732570650464555&amp;guid=5eef80bfeddda464fa9614bea4bf271c&amp;type=3#NotInter-Regular&apos;); color: rgb(255, 255, 255); background-color: rgb(58, 58, 58);" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

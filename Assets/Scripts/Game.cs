@@ -9,6 +9,7 @@ public class Game : MonoBehaviour
     [SerializeField]
     private GameObject _board;
     private Board _boardController;
+    public Board getBoard() { return _boardController; }
 
     //Heroes Prefabs
     [SerializeField]
@@ -25,19 +26,14 @@ public class Game : MonoBehaviour
     //Game State
     [SerializeField]
     private GameState _gameState;
-
+    public void setGameState(GameState gameState) { _gameState = gameState; }
     //La celda que esta siendo hovered en el momento
     private GameObject _hoveredCell;
 
     private GameObject _hero;
 
+    private ActionController _actionController;
 
-    /*Utils*/
-    [SerializeField]
-    private LineDrawer _lineDrawer;
-
-    /*Actions*/
-    private List<Action> _currentActions;
 
     // Start is called before the first frame update
     void Start()
@@ -50,37 +46,7 @@ public class Game : MonoBehaviour
         buildBoard();
         buildHeroes();
         _gameState = GameState.SelectingHero;
-        _lineDrawer = this.GetComponent<LineDrawer>();
-    }
-
-    private void Update()
-    {
-        if (_gameState == GameState.SelectingHero) {
-            selectHero();
-        }
-        else if (_gameState == GameState.SelectingAction)
-        {
-            mouseHover();
-            OnClick();
-        }
-        
-    }
-
-    private void selectHero() {
-        GameObject heroGo = checkUserClick();
-        if (heroGo != null)
-        {
-            Hero hero = heroGo.GetComponent<Hero>();
-            if (hero != null)
-            {
-                _currentActions = getAvailableActions(hero);
-                foreach (Action action in _currentActions)
-                {
-                    action.DestinyCell.ShowAvaliable();
-                }
-                _gameState = GameState.SelectingAction;
-            }
-        }
+        _actionController = this.GetComponent<ActionController>();
     }
 
     private void buildBoard()
@@ -96,7 +62,8 @@ public class Game : MonoBehaviour
         _playerDeployCell = boardController.GetHeroDeployCell();
     }
 
-    private void buildHeroes() {
+    private void buildHeroes()
+    {
         //PlayerWarrior
         _hero = Instantiate(_playerWarriorPerfab, new Vector3(), Quaternion.identity);
         _hero.name = "Player Warrior";
@@ -106,41 +73,57 @@ public class Game : MonoBehaviour
         heroController.Configure(false, 2);
     }
 
-    /*Calculador de acciones*/
-    private List<Action> getAvailableActions(Hero hero) { 
-        List<Action> actions = new List<Action>();
-        if (!hero.Deployed) {
-            Action act = new Action();
-            act.DestinyCell = _boardController.GetHeroDeployCell();
-            act.ActionType = ActionType.Deploy;
-            actions.Add(act);
+    private void Update()
+    {
+        if (_gameState == GameState.SelectingHero)
+        {
+            selectHero();
         }
-
-        return actions;
+        else if (_gameState == GameState.SelectingAction)
+        {
+            mouseHover();
+            checkUserClickingCell();
+        }
+        else if (_gameState == GameState.MovingHero) //esto podria ser un performing action
+        {
+            bool completed = _actionController.MoveHeroToPosition();
+            if (completed) {
+                _gameState = GameState.SelectingHero;
+            }
+        }
     }
 
-    private GameObject checkUserClick() {
+    private void selectHero() {
+        Hero hero = checkUserClickingHero();
+        if (hero != null)
+        {
+            _actionController.SetSelectedHero(hero);
+            List<Action> actions = _actionController.CalculatePossibleActions(hero);
+            _actionController.EnableActions(actions);
+            _gameState = GameState.SelectingAction;
+        }
+    }
+
+    private Hero checkUserClickingHero() {
+
         if (Input.GetMouseButtonDown(0))
         {
-            if (Input.GetMouseButtonDown(0))
-            {
-                RaycastHit hit;
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-                if (Physics.Raycast(ray, out hit))
+            if (Physics.Raycast(ray, out hit))
+            {
+                if (hit.transform.tag == "PlayerSelect")
                 {
-                    if (hit.transform.tag == "PlayerSelect")
-                    {
-                        GameObject hitTransform = hit.transform.gameObject;
-                        Renderer rend = hitTransform.GetComponent<Renderer>(); 
-                        rend.enabled = true;
-                        return hitTransform.transform.parent.gameObject;
-                    }
+                    Debug.Log("Golpie a un eroe");
+                    Hero hero = hit.transform.parent.GetComponent<Hero>();
+                    hero.SetSelected(true);
+                    return hero;
                 }
             }
-            return null;
         }
         return null;
+
     }
 
     /**/
@@ -155,23 +138,16 @@ public class Game : MonoBehaviour
             if (hit.transform.tag == "Cellhighlight")
             {
                 GameObject hitTransform = hit.transform.gameObject;
-                if (_hoveredCell == null || _hoveredCell != hitTransform) {
-                    _hoveredCell = hitTransform;
-                    Cell hitCell = hitTransform.transform.parent.transform.parent.GetComponent<Cell>();
-                    Debug.Log(hitCell);
-                    if (IsCellOnActions(hitCell)) {
-                        _lineDrawer.DrawCurveBetweenObjects(hitTransform, _hero);
-                    }
-                }
+                Cell hitCell = hitTransform.transform.parent.transform.parent.GetComponent<Cell>();
+                _actionController.HighLightCell(hitCell);
             }
             else {
-                _hoveredCell = null;
-                _lineDrawer.RemoveLine();
+                _actionController.UnHighLightCell();
             }
         }
     }
 
-    public void OnClick() {
+    public void checkUserClickingCell() {
         if (Input.GetMouseButtonDown(0))
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -182,30 +158,15 @@ public class Game : MonoBehaviour
             {
                 if (hit.transform.tag == "Cellhighlight")
                 {
-                    Debug.Log("Se hizo click");
                     Transform hitTransform = hit.transform;
                     /*Obtengo el objeto celda*/
                     Cell hitCell = hitTransform.transform.parent.transform.parent.GetComponent<Cell>();
-                    Debug.Log("Se hizo click" + hitCell);
-                    //la hit cell es parte de las posibles acciones?
-                    if (IsCellOnActions(hitCell)) {
-                        hitCell.ShowSelected();
-                        _gameState = GameState.ActonSelected;
-                    }
+                    _actionController.SetActionAsSelected(hitCell);
                 }
             }
         }
     }
 
-    private bool IsCellOnActions(Cell cell) {
-        for (int i = 0; i < _currentActions.Count; i++)
-        {
-            if (_currentActions[i].DestinyCell == cell)
-            {
-                return true;
-            }
-        }
-        return false;
-    }
+   
 
 }
