@@ -70,7 +70,7 @@ public class Game : MonoBehaviour
         _hero.transform.parent = _playerWarriorSpawnCell.transform;
         _hero.transform.localPosition = new Vector3(0, 0, 0);
         Hero heroController = _hero.GetComponent<Hero>();
-        heroController.Configure(false, 2);
+        heroController.Configure(false, 2, 3);
     }
 
     private void Update()

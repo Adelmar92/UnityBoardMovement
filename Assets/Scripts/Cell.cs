@@ -5,7 +5,9 @@ using UnityEngine.UIElements;
 
 public class Cell : MonoBehaviour
 {
+    [SerializeField]
     private bool _hasTrap;
+    public bool HasTrap() { return _hasTrap; }
     private bool _isRevealed;
     private CellType _cellType;
     public int Col;

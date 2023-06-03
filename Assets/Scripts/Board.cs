@@ -11,7 +11,7 @@ public class Board : MonoBehaviour
 
 
     [SerializeField]
-    private int _trapAmount = 8;
+    private int _trapAmount = 10;
     [SerializeField]
     private Cell _heroDeployCell;
 
@@ -39,7 +39,7 @@ public class Board : MonoBehaviour
 
                 Cell cellController = cell.GetComponent<Cell>();
 
-                bool hasTrap = trapCells.Any(x => x[0] == row && x[1] == col);
+                bool hasTrap = true;  //trapCells.Any(x => x[0] == row && x[1] == col);
 
                 if (hasTrap)
                 {

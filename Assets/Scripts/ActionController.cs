@@ -132,21 +132,33 @@ public class ActionController : MonoBehaviour
         // Verifica si el objeto ha alcanzado su posición final
         if (distance < 0.05f)
         {
-            SelectedHero.gameObject.transform.position = _selectedAction.DestinyCell.gameObject.transform.position;
-            SelectedHero.SetSelected(false);
-            SelectedHero.transform.parent = _selectedAction.DestinyCell.transform;
-
-            if (_selectedAction.DestinyCell.GetCellType() == CellType.Normal) {
-                _selectedAction.DestinyCell.Reveal();
-            }
-
-            SelectedHero = null;
-            _selectedAction = null;
-            _availableActions = null;
+            FinishMovement();
             return true;
         }
 
         return false;
+    }
+
+    public void FinishMovement() {
+        SelectedHero.gameObject.transform.position = _selectedAction.DestinyCell.gameObject.transform.position;
+        SelectedHero.SetSelected(false);
+        SelectedHero.transform.parent = _selectedAction.DestinyCell.transform;
+
+        if (_selectedAction.DestinyCell.GetCellType() == CellType.Normal)
+        {
+            _selectedAction.DestinyCell.Reveal();
+            if (_selectedAction.DestinyCell.HasTrap()) {
+                Debug.Log("El jugador sufrio Daño!");
+                SelectedHero.takeDamage();
+                if (SelectedHero.isDead()) {
+                    SelectedHero.Kill();
+                }
+            }
+        }
+
+        SelectedHero = null;
+        _selectedAction = null;
+        _availableActions = null;
     }
 
     public List<Action> GetPossibleActions(Cell[,] _cells, int playerX, int playerY, int movementCount)
