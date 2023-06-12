@@ -58,8 +58,6 @@ public class ActionController : MonoBehaviour
         return actions;
     }
 
-    
-
     public void EnableActions(List<Action> actions) {
         foreach (Action action in actions)
         {
@@ -148,11 +146,12 @@ public class ActionController : MonoBehaviour
         {
             _selectedAction.DestinyCell.Reveal();
             if (_selectedAction.DestinyCell.HasTrap()) {
-                Debug.Log("El jugador sufrio Daño!");
+                _selectedAction.DestinyCell.ActivateTrap();
                 SelectedHero.takeDamage();
                 if (SelectedHero.isDead()) {
                     SelectedHero.Kill();
                 }
+                _selectedAction.DestinyCell.RemoveTrap();
             }
         }
 

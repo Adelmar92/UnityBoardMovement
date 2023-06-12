@@ -2,17 +2,30 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
+using UnityEngine.WSA;
 
 public class Cell : MonoBehaviour
 {
     [SerializeField]
     private bool _hasTrap;
     public bool HasTrap() { return _hasTrap; }
+    public void RemoveTrap() { _hasTrap = false; }
+
+    [SerializeField]
+    private Animator _anim;
+
     private bool _isRevealed;
     private CellType _cellType;
     public int Col;
     public int Row;
     public bool canHighlight;
+
+    public void Start()
+    {
+        if (_cellType == CellType.Normal) {
+            _anim = gameObject.transform.GetChild(0).GetChild(3).GetComponent<Animator>();
+        }
+    }
     public void Configurate(bool hasTrap, CellType cellType, int col, int row)
     {
         _hasTrap = hasTrap;
@@ -101,5 +114,10 @@ public class Cell : MonoBehaviour
         /*Hago el available invisible*/
         GameObject child4 = child.transform.GetChild(0).gameObject;
         child4.SetActive(false);
+    }
+
+    public void ActivateTrap() {
+        gameObject.transform.GetChild(0).GetChild(3).gameObject.SetActive(true);
+        _anim.SetTrigger("Activated");
     }
 }

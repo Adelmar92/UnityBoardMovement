@@ -86,6 +86,6 @@ public class LineDrawer : MonoBehaviour
     }
 
     public void RemoveLine() {
-        Destroy(_pointerLine);
+        DestroyImmediate(_pointerLine);
     }
 }

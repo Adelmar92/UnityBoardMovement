@@ -39,7 +39,7 @@ public class Board : MonoBehaviour
 
                 Cell cellController = cell.GetComponent<Cell>();
 
-                bool hasTrap = true;  //trapCells.Any(x => x[0] == row && x[1] == col);
+                bool hasTrap = trapCells.Any(x => x[0] == row && x[1] == col);
 
                 if (hasTrap)
                 {
